@@ -1,0 +1,27 @@
+import java.io.*;
+import java.net.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+class UDPServer {
+  public static void main(String args[]) throws Exception {
+
+    DatagramSocket serverSocket = new DatagramSocket(1667);
+    byte[] receiveData = new byte[1024];
+    byte[] sendData = new byte[1024];
+
+    while (true) {
+      System.out.println("The server is waiting ");
+      DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+      serverSocket.receive(receivePacket);
+      InetAddress IPAddress = receivePacket.getAddress();
+      int port = receivePacket.getPort();
+      SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+      Date date = new Date();
+      String capitalizedSentence = formatter.format(date);
+      sendData = capitalizedSentence.getBytes();
+      DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
+      serverSocket.send(sendPacket);
+    }
+  }
+}
